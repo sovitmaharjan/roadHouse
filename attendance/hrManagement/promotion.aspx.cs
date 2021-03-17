@@ -25,26 +25,20 @@ namespace attendance.hrManagement {
         protected void Page_Load(object sender, EventArgs e) {
             pageNamePlace1.Text = "Quick Attendance";
             pageNamePlace2.Text = "Quick Attendance";
-            DataTable dtBranch = attendanceObject.queryFunction("SELECT BRANCH_ID, BRANCH_NAME FROM Tbl_Comp_Branch ORDER BY BRANCH_NAME ASC");
-            branch.DataSource = dtBranch;
-            branch.DataTextField = "BRANCH_NAME";
-            branch.DataValueField = "BRANCH_ID";
-            branch.DataBind();
-            branch.Items.Insert(0, new ListItem("Select Branch", ""));
-            DataTable dtDepartment = attendanceObject.queryFunction("SELECT DEPT_ID, DEPT_NAME FROM Tbl_Org_Dept WHERE LEVEL = 1 ORDER BY DEPT_NAME ASC");
-            department.DataSource = dtDepartment;
-            department.DataTextField = "DEPT_NAME";
-            department.DataValueField = "DEPT_ID";
-            department.DataBind();
-            department.Items.Insert(0, new ListItem("Select Department", ""));
             DataTable dtEmployee = attendanceObject.queryFunction("SELECT EMP_ID, emp_Fullname FROM view_Emp_Info ORDER BY emp_Fullname ASC");
             employee.DataSource = dtEmployee;
             employee.DataTextField = "emp_Fullname";
             employee.DataValueField = "EMP_ID";
             employee.DataBind();
             employee.Items.Insert(0, new ListItem("Select Employee", ""));
+            DataTable dtDepartment = attendanceObject.queryFunction("SELECT DEG_ID, DEG_NAME FROM Tbl_Org_Desg ORDER BY DEG_NAME ASC");
+            designation.DataSource = dtDepartment;
+            designation.DataTextField = "DEG_NAME";
+            designation.DataValueField = "DEG_ID";
+            designation.DataBind();
+            designation.Items.Insert(0, new ListItem("Select Designation", ""));
 
-            DataTable dtResult = attendanceObject.queryFunction("SELECT * FROM view_emp_promotion_details ORDER BY TDate ");
+            DataTable dtResult = attendanceObject.queryFunction("SELECT * FROM view_emp_promotion_details ORDER BY TDate DESC ");
             string tableBodyRow = "";
             foreach (DataRow value in dtResult.Rows) {
                 tableBodyRow += "<tr>";
@@ -62,73 +56,35 @@ namespace attendance.hrManagement {
             }
             tableBody.Text = tableBodyRow;
 
-            //if (!IsPostBack) {
-            //    if (!string.IsNullOrEmpty(Request.Params["branchId"])) {
-            //        DataTable dtHeaderInfo;
-            //        string branchInfo, departmentInfo, employeeInfo;
-            //        if (Request.Params["branchId"] == "0") {
-            //            branchInfo = "ALL";
-            //        } else {
-            //            dtHeaderInfo = attendanceObject.queryFunction("SELECT BRANCH_NAME FROM tbl_comp_branch WHERE BRANCH_ID = '" + Request.Params["branchId"] + "'");
-            //            branchInfo = dtHeaderInfo.Rows[0]["BRANCH_NAME"].ToString();
-            //        }
-            //        if (Request.Params["departmentId"] == "0") {
-            //            departmentInfo = "ALL";
-            //        } else {
-            //            dtHeaderInfo = attendanceObject.queryFunction("SELECT DEPT_NAME FROM Tbl_Org_Dept WHERE DEPT_ID = '" + Request.Params["departmentId"] + "'");
-            //            departmentInfo = dtHeaderInfo.Rows[0]["DEPT_NAME"].ToString();
-            //        }
-            //        if (Request.Params["employeeId"] == "0") {
-            //            employeeInfo = "ALL";
-            //        } else {
-            //            dtHeaderInfo = attendanceObject.queryFunction("SELECT emp_Fullname FROM view_emp_info WHERE EMP_ID = '" + Request.Params["employeeId"] + "'");
-            //            employeeInfo = dtHeaderInfo.Rows[0]["emp_Fullname"].ToString() + " (" + Request.Params["employeeId"] + ")";
-            //        }
-            //        heading.Text = "<b>Branch: " + branchInfo + "</b><br /><b>Department: " + departmentInfo + "</b><br /><b><span style='font-size: 14px; color: #797979;'>Employee: " + employeeInfo + "</span></b><br/>";
-
-            //        startDate.Value = Request.Params["startDate"];
-            //        endDate.Value = Request.Params["endDate"];
-            //        branch.SelectedValue = Request.Params["branchId"];
-            //        department.SelectedValue = Request.Params["departmentId"];
-            //        employee.SelectedValue = Request.Params["employeeId"];
-            //        if (Request.Params["branchId"] == "0") {
-            //            allBranch.Checked = true;
-            //        } else {
-            //            branchId.Value = Request.Params["branchId"];
-            //        }
-            //        if (Request.Params["departmentId"] == "0") {
-            //            allDepartment.Checked = true;
-            //        } else {
-            //            departmentId.Value = Request.Params["departmentId"];
-            //        }
-            //        if (Request.Params["employeeId"] == "0") {
-            //            allEmployee.Checked = true;
-            //        } else {
-            //            employeeId.Value = Request.Params["employeeId"];
-            //        }
-
-            //    }
-            //}
+             if (!IsPostBack) {
+                if (!string.IsNullOrEmpty(Request.Params["employeeId"])) {
+                    Dictionary<string, object> data = new Dictionary<string, object>();
+                    data.Add("Emp_id", Request.Params["employeeId"]);
+                    data.Add("TDate", Request.Params["startDate"]);
+                    data.Add("Promotion_title", Request.Params["description"]);
+                    data.Add("IsCurrent", Request.Params["isCurrent"]);
+                    data.Add("desg_id", Request.Params["designation"]);
+                    data.Add("P_Deg_Id", Request.Params["previousDesignationId"]);
+                    int i = attendanceObject.insertTableData("Tbl_Emp_Promotion_Detail", data);
+                    if (i == 1) {
+                        data.Clear();
+                        data.Add("DEG_ID", Request.Params["previousDesignationId"]);
+                        Dictionary<string, object> condition = new Dictionary<string, object>();
+                        condition.Add("Emp_id", Request.Params["designation"]);
+                        attendanceObject.updateTableData("Tbl_emp_off_info", data, condition);
+                    }
+                }
+            }
         }
 
-        protected void loadClick(object sender, EventArgs e) {
-            //string emp, bra, dept;
-            //if (allBranch.Checked) {
-            //    bra = "0";
-            //} else {
-            //    bra = branchId.Value.ToString();
-            //}
-            //if (allDepartment.Checked) {
-            //    dept = "0";
-            //} else {
-            //    dept = departmentId.Value.ToString();
-            //}
-            //if (allEmployee.Checked) {
-            //    emp = "0";
-            //} else {
-            //    emp = employeeId.Value.ToString();
-            //}
-            //Response.Redirect(baseUrl + "leaveTakenDetail?startDate=" + startDate.Value + "&endDate=" + endDate.Value + "&branchId=" + bra + "&departmentId=" + dept + "&employeeId=" + emp);
+        protected void saveClick(object sender, EventArgs e) {
+            string isCur;
+            if (latestTransfer.Checked) {
+                isCur = "1";
+            } else {
+                isCur = "0";
+            }
+            Response.Redirect(baseUrl + "promotion?startDate=" + startDate.Value + "&employeeId=" + employeeId.Value + "&previousDesignationId=" + currentDesignationId.Value + "&designation=" + designation.SelectedValue + "&isCurrent=" + isCur + "&description=" + description.Value);
         }
     }
 }

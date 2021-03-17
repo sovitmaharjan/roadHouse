@@ -10,6 +10,9 @@
     <!-- App title -->
     <title><%=this.projectName%></title>
 
+    <!--Form Wizard-->
+    <link rel="stylesheet" type="text/css" href="<%=this.baseUrl%>assets/plugins/jquery.steps/css/jquery.steps.css" />
+
     <!-- Pickers -->
     <link href="<%=this.baseUrl%>assets/plugins/timepicker/bootstrap-timepicker.min.css" rel="stylesheet">
 	<link href="<%=this.baseUrl%>assets/plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css" rel="stylesheet">
@@ -515,6 +518,10 @@
     <script src="<%=this.baseUrl%>assets/js/jquery.scrollTo.min.js"></script>
     <script src="<%=this.baseUrl%>assets/plugins/switchery/switchery.min.js"></script>
 
+    <!--Form Wizard-->
+    <script src="<%=this.baseUrl%>assets/plugins/jquery.steps/js/jquery.steps.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="<%=this.baseUrl%>assets/plugins/jquery-validation/js/jquery.validate.min.js"></script>
+
     <script src="<%=this.baseUrl%>assets/plugins/datatables/jquery.dataTables.min.js"></script>
     <script src="<%=this.baseUrl%>assets/plugins/datatables/dataTables.bootstrap.js"></script>
 
@@ -561,11 +568,14 @@
     <script src="<%=this.baseUrl%>assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
     <script src="<%=this.baseUrl%>assets/plugins/clockpicker/js/bootstrap-clockpicker.min.js"></script>
     <script src="<%=this.baseUrl%>assets/plugins/bootstrap-daterangepicker/daterangepicker.js"></script>
-    <script src="<%=this.baseUrl%>/assets/nepaliDatePicker/nepali.datepicker.v2.2.min.js"></script>
+    <script src="<%=this.baseUrl%>assets/nepaliDatePicker/nepali.datepicker.v2.2.min.js"></script>
 
     <!-- App js -->
     <script src="<%=this.baseUrl%>assets/js/jquery.core.js"></script>
     <script src="<%=this.baseUrl%>assets/js/jquery.app.js"></script>
+
+    <!--wizard initialization-->
+    <script src="<%=this.baseUrl%>assets/pages/jquery.wizard-init.js" type="text/javascript"></script>
 
     <script>
         function dataTableFunction(param) {

@@ -112,6 +112,15 @@ namespace attendance.hrManagement {
         protected global::System.Web.UI.HtmlControls.HtmlInputText currentDesignation;
         
         /// <summary>
+        /// currentDesignationId control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlInputHidden currentDesignationId;
+        
+        /// <summary>
         /// currentSection control.
         /// </summary>
         /// <remarks>
@@ -130,22 +139,13 @@ namespace attendance.hrManagement {
         protected global::System.Web.UI.HtmlControls.HtmlInputText currentBranch;
         
         /// <summary>
-        /// branch control.
+        /// designation control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList branch;
-        
-        /// <summary>
-        /// department control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList department;
+        protected global::System.Web.UI.WebControls.DropDownList designation;
         
         /// <summary>
         /// latestTransfer control.
@@ -157,12 +157,21 @@ namespace attendance.hrManagement {
         protected global::System.Web.UI.HtmlControls.HtmlInputCheckBox latestTransfer;
         
         /// <summary>
-        /// loadButton control.
+        /// description control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button loadButton;
+        protected global::System.Web.UI.HtmlControls.HtmlTextArea description;
+        
+        /// <summary>
+        /// saveButton control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button saveButton;
     }
 }

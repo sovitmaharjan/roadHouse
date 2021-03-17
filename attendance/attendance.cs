@@ -70,15 +70,15 @@ namespace attendance {
             return queryFunction(query);
         }
 
-        public void insertTableData(string table, Dictionary<string, object> data) {
+        public int insertTableData(string table, Dictionary<string, object> data) {
+            string query;
             string column = "";
             string columnValue = "";
-            string query;
 
             if (data.Count == 1) {
                 foreach (KeyValuePair<string, object> value in data) {
                     column = value.Key;
-                    columnValue = "'" + value.Value + "' ";
+                    columnValue = "@" + value.Key;
                 }
             } else if (data.Count > 1) {
                 foreach (KeyValuePair<string, object> value in data) {
@@ -88,51 +88,68 @@ namespace attendance {
                         column += " , " + value.Key;
                     }
                     if (columnValue == "") {
-                        columnValue = "'" + value.Value + "' ";
+                        columnValue = "@" + value.Key;
                     } else {
-                        columnValue += " , '" + value.Value + "' ";
+                        columnValue += " , @" + value.Key;
                     }
                 }
             }
-            query = "insert into " + table + " ( " + column + " ) values ( " + columnValue + " )";
-            queryFunction(query);
+            query = "INSERT INTO " + table + " ( " + column + " ) VALUES ( " + columnValue + " )";
+            SqlCommand command = new SqlCommand(query, connection);
+            foreach (KeyValuePair<string, object> value in data) {
+                command.Parameters.AddWithValue("@" + value.Key, value.Value);
+            }
+            connection.Open();
+            int i = command.ExecuteNonQuery();
+            connection.Close();
+            return i;
         }
 
-        public void updateTableData(string table, Dictionary<string, object> data, Dictionary<string, object> condition) {
+        public int updateTableData(string table, Dictionary<string, object> data, Dictionary<string, object> condition) {
             string updateData = "";
             string conditionData = "";
             string query;
 
             if (data.Count == 1) {
                 foreach (KeyValuePair<string, object> value in data) {
-                    updateData = value.Key + " = '" + value.Value + "' ";
+                    updateData = value.Key + " = @" + value.Key;
                 }
             } else if (data.Count > 1) {
                 foreach (KeyValuePair<string, object> value in data) {
                     if(updateData == ""){
-				        updateData = value.Key + " = '" + value.Value + "' ";
-			        }else{
-				        updateData += " , " + value.Key + " = '" + value.Value + "' ";
+                        updateData = value.Key + " = @" + value.Key;
+			        } else {
+                        updateData += " , " + value.Key + " = @" + value.Key;
 			        }
                 }
             }
 
             if(condition.Count == 1){
 		        foreach(KeyValuePair<string, object> value in condition){
-			        conditionData = value.Key + " = '" + value.Value + "' ";
+                    conditionData = value.Key + " = @" + value.Key;
 		        }
 	        }else if(condition.Count > 1){
 		        foreach(KeyValuePair<string, object> value in condition){
 			        if(conditionData == ""){
-				        conditionData = value.Key + " = '" + value.Value + "' ";
-			        }else{
-				        conditionData += " and " + value.Key + " = '" + value.Value + "' ";
+                        conditionData = value.Key + " = @" + value.Key;
+			        } else {
+                        conditionData += " and " + value.Key + " = @" + value.Key;
 			        }
 		        }
 	        }
 
-            query = "update " + table + " set " + updateData + " where " + conditionData;
-            queryFunction(query);
+            query = "UPDATE " + table + " SET " + updateData + " WHERE " + conditionData;
+            SqlCommand command = new SqlCommand(query, connection);
+            foreach (KeyValuePair<string, object> value in data) {
+                command.Parameters.AddWithValue("@" + value.Key, value.Value);
+            }
+            foreach (KeyValuePair<string, object> value in condition) {
+                command.Parameters.AddWithValue("@" + value.Key, value.Value);
+            }
+            connection.Open();
+            int i = command.ExecuteNonQuery();
+            connection.Close();
+            return i;
         }
 
         

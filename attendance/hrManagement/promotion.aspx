@@ -29,14 +29,15 @@
                     </p>
                 </div>
                 <div class="form-group">
-                    <button type="button" id="load" class="btn btn-success w-xs waves-effect waves-light" data-toggle="modal" data-target="#loadContent">
+                    <button type="button" id="add" class="btn btn-success w-xs waves-effect waves-light" data-toggle="modal" data-target="#addContent">
                         <i class="mdi mdi-plus"></i>Add Content
                     </button>
 
                 </div>
-                <table id="" class="table table-striped table-bordered table-colored table-info">
+                <table id="datatable" class="table table-striped table-bordered table-colored table-info">
                     <thead>
                         <tr>
+                            <th>S. No.</th>
                             <th>Date</th>
 							<th>Emp Name</th>
 							<th>Promotion Title</th>
@@ -54,7 +55,7 @@
     </div>
     <!-- end row -->
 
-    <div id="loadContent" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="custom-width-modalLabel" aria-hidden="true" style="display: none;">
+    <div id="addContent" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="custom-width-modalLabel" aria-hidden="true" style="display: none;">
         <div class="modal-dialog" style="width: 65%;">
             <div class="modal-content">
                 <form id="form" class="form-horizontal" runat="server">
@@ -65,7 +66,7 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label class="col-md-2 control-label">
-                                Start Date
+                                Date
                                 <span class="text-danger">* </span>
                             </label>
                             <div class="col-md-4">
@@ -118,6 +119,7 @@
                                             </label>
                                             <div class="col-md-8">
                                                 <input type="text" id="currentDesignation" class="currentDesignation form-control" required="required" readonly="readonly" runat="server" />
+                                                <input type="hidden" id="currentDesignationId" runat="server" />
                                             </div>
                                         </div>
                                         <div class="form-group">
@@ -147,20 +149,11 @@
                                     <div class="panel-body">
                                         <div class="form-group">
                                             <label class="col-md-4 control-label">
-                                                Branch
+                                                Designation
                                                 <span class="text-danger">* </span>
                                             </label>
                                             <div class="col-md-8">
-                                                <asp:DropDownList ID="branch" CssClass="branch form-control" runat="server" required="required"></asp:DropDownList>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-md-4 control-label">
-                                                Department
-                                                <span class="text-danger">* </span>
-                                            </label>
-                                            <div class="col-md-8">
-                                                <asp:DropDownList ID="department" CssClass="department form-control" runat="server" required="required"></asp:DropDownList>
+                                                <asp:DropDownList ID="designation" CssClass="designation form-control" runat="server" required="required"></asp:DropDownList>
                                             </div>
                                         </div>
                                     </div>
@@ -184,13 +177,13 @@
                                 <span class="text-danger">* </span>
 	                        </label>
 	                        <div class="col-md-10">
-	                            <textarea class="form-control"></textarea>
+	                            <textarea id="description" class="description form-control" runat="server"></textarea>
 	                        </div>
 	                    </div>
                     </div>
                     <div class="modal-footer">
                         <button id="clear" type="button" class="btn btn-default waves-effect">Clear</button>
-                        <asp:Button ID="loadButton" Text="Load" CssClass="btn btn-success" OnClick="loadClick" runat="server" />
+                        <asp:Button ID="saveButton" Text="Save" CssClass="btn btn-success" OnClick="saveClick" runat="server" />
                     </div>
                 </form>
             </div>
@@ -201,7 +194,8 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="footer" runat="server">
     <script>
         $(document).ready(function () {
-            function get() {
+            dataTableFunction();
+            function get(id) {
                 $.ajax({
                     method: 'post',
                     url: baseUrl + '/function.aspx/getDataByEmpId',
@@ -212,29 +206,12 @@
                     success: function (result) {
                         result = result.d;
                         if (result.length > 0) {
-                            var branchId = result[0]['BRANCH_ID'];
-                            var departmentId = result[0]['DEPT_ID'];
-                            $('.currentBranch').val(branchId);
-                            $('.currentDepartment').val(branchId);
-                            $('.currentSection').val(branchId);
-                            $('.currentGrade').val(branchId);
-                            if ($('.currentBranch').val() != branchId) {
-                                $('.branch').val(branchId).prop('selected', true);
-                            }
-                            if ($('.department').val() != departmentId) {
-                                getAllDepartment();
-                                $('.department').val(departmentId).prop('selected', true);
-                                $('.departmentId').val(departmentId);
-                            }
-                            if ($('.employee').val() != id) {
-                                getAllEmployee();
-                                $('.employee').val(id).prop('selected', true);
-                            }
-                        } else {
-                            $('.branch').val('');
-                            $('.branchId').val('');
-                            $('.department').val('');
-                            $('.departmentId').val('');
+                            result = result[0];
+                            $('.currentGrade').val(result['GRADE_NAME']);
+                            $('.currentDesignation').val(result['DEG_NAME']);
+                            $('#<%=currentDesignationId.ClientID%>').val(result['DEG_ID']);
+                            $('.currentSection').val(result['section_name']);
+                            $('.currentBranch').val(result['BRANCH_NAME']);
                         }
                     }
                 });

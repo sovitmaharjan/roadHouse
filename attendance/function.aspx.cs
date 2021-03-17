@@ -79,8 +79,7 @@ namespace attendance {
         [WebMethod]
         public static List<Dictionary<string, object>> getDataByEmpId(int id) {
             List<string> field = new List<string>();
-            DataTable dtDepartment = attendanceObject.queryFunction("SELECT EMP_ID, emp_Fullname, BRANCH_ID, DEPT_ID, DEG_ID, DEG_NAME FROM view_Emp_Info WHERE EMP_ID = '" + id + "'");
-
+            DataTable dtDepartment = attendanceObject.queryFunction("SELECT EMP_ID, emp_Fullname, BRANCH_ID, BRANCH_NAME, DEPT_ID, DEPT_NAME, DEG_ID, DEG_NAME, sect_id, section_name, GRADE_ID, GRADE_NAME FROM view_Emp_Info WHERE EMP_ID = '" + id + "'");
             List<Dictionary<string, object>> data = new List<Dictionary<string, object>>();
             foreach (DataRow dataTableRow in dtDepartment.Rows) {
                 Dictionary<string, object> dic = new Dictionary<string, object>();
@@ -112,6 +111,22 @@ namespace attendance {
         public static List<Dictionary<string, object>> getAllEmployee() {
             List<string> field = new List<string>();
             DataTable dtDepartment = attendanceObject.queryFunction("SELECT EMP_ID, emp_Fullname from view_emp_info ORDER BY emp_Fullname ASC");
+
+            List<Dictionary<string, object>> data = new List<Dictionary<string, object>>();
+            foreach (DataRow dataTableRow in dtDepartment.Rows) {
+                Dictionary<string, object> dic = new Dictionary<string, object>();
+                foreach (DataColumn tableColumn in dtDepartment.Columns) {
+                    dic.Add(tableColumn.ColumnName, dataTableRow[tableColumn]);
+                }
+                data.Add(dic);
+            }
+            return data;
+        }
+
+        [WebMethod]
+        public static List<Dictionary<string, object>> getSectionByBranchId(int id) {
+            List<string> field = new List<string>();
+            DataTable dtDepartment = attendanceObject.queryFunction("SELECT DISTINCT(sect_id), sect_name  FROM view_emp_info WHERE BRANCH_ID = '" + id + "' ORDER BY sect_name ASC ");
 
             List<Dictionary<string, object>> data = new List<Dictionary<string, object>>();
             foreach (DataRow dataTableRow in dtDepartment.Rows) {
